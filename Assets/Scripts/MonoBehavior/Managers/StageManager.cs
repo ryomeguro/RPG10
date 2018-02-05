@@ -17,10 +17,13 @@ public class StageManager : MonoBehaviour {
 
 	SortedDictionary<ItemManager.Item,int> itemList = new SortedDictionary<ItemManager.Item, int>();
 
+	List<Record> tmpRecordFolder = new List<Record>();
+
 	int maxHP,maxMP;
 	int maxEx;
 	TextMeshProUGUI informationText;
 	StageInfo stageInfo;
+	Record nowRecord;
 
 	PlayerMove playerMove;
 
@@ -35,7 +38,7 @@ public class StageManager : MonoBehaviour {
 			return hp;
 		}
 		set{ 
-			hp = value;
+			hp = Mathf.Min(maxHP, value);
 			UIUpdate ();
 		}
 	}
@@ -46,7 +49,7 @@ public class StageManager : MonoBehaviour {
 			return mp;
 		}
 		set{ 
-			mp = value;
+			mp = Mathf.Min (maxMP, value);
 			UIUpdate ();
 		}
 	}
@@ -68,7 +71,7 @@ public class StageManager : MonoBehaviour {
 			return experience;
 		}
 		set{ 
-			while (value > 10) {
+			while (value > 100) {
 				value -= 10;
 				LevelUp ();
 			}
@@ -101,10 +104,19 @@ public class StageManager : MonoBehaviour {
 		if (time <= 0) {
 			time = 0;
 			UIUpdate ();
-			TurnEnd ();
+			if (turnNumber >= stageInfo.turnNumber) {
+				StageFailed ();
+			} else {
+				TurnEnd ();
+			}
 			return;
 		}
 		UIUpdate ();
+
+		if (nowRecord.time > time) {
+			nowRecord.RecordAction ();
+			nowRecord = folder.GetRecord ();
+		}
 	}
 
 	public void StageInit(){
@@ -113,6 +125,8 @@ public class StageManager : MonoBehaviour {
 		turnNumber = 1;
 
 		AllConditions.Instance.Reset ();
+		folder.Reset ();
+
 		TurnInit ();
 
 		isStart = true;
@@ -122,13 +136,16 @@ public class StageManager : MonoBehaviour {
 		stageInfo = GameObject.Find ("StageInfo").GetComponent<StageInfo> ();
 		informationText = GameObject.Find ("InformationText").GetComponent<TextMeshProUGUI> ();
 
-		ParamCalc (stageInfo.startLv);
+		Lv = stageInfo.startLv;
+		ParamCalc (Lv);
 		time = stageInfo.turnDuration;
 		AllRecover ();
 		Money = stageInfo.startMoney;
 
 		playerMove = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMove> ();
 		playerMove.folder = moveFolders [turnNumber - 1];
+
+		nowRecord = folder.GetRecord ();
 
 		for (int i = 0; i < turnNumber - 1; i++) {
 			Transform initPosition = stageInfo.initPosition;
@@ -142,12 +159,23 @@ public class StageManager : MonoBehaviour {
 
 	public void TurnEnd(){
 		isStart = false;
+
+		foreach (Record rec in tmpRecordFolder) {
+			folder.AddRecord (rec);
+		}
+		folder.Sort ();
+		tmpRecordFolder.Clear ();
+
 		turnNumber++;
 		SceneController.Instance.TurnEnd ();
 	}
 
-	public void StageEnd(){
+	public void StageClear(){
+		Debug.Log ("CLEAR!!!!");
+	}
 
+	void StageFailed(){
+		Debug.Log ("Failed...");
 	}
 
 	public void UIUpdate(){
@@ -182,6 +210,11 @@ public class StageManager : MonoBehaviour {
 		}
 		UIUpdate ();
 		return flg;
+	}
+
+	public void AddRecord(Record record){
+		record.time = time;
+		tmpRecordFolder.Add (record);
 	}
 
 	public int GetAttackPower(){

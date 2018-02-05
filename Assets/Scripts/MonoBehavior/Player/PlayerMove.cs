@@ -34,6 +34,9 @@ public class PlayerMove : MonoBehaviour {
 		if (moveDirection != Vector3.zero) {
 			transform.eulerAngles = new Vector3 (0, Mathf.Atan2 (moveDirection.x, moveDirection.z) * Mathf.Rad2Deg, 0);
 		}
+		if (!cc.isGrounded) {
+			moveDirection += Vector3.down * 2;
+		}
 		cc.Move (moveDirection * Time.deltaTime * maxSpeed);
 
 		time += Time.deltaTime;

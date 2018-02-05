@@ -39,25 +39,24 @@ public class MonsterInteractable : SelectableInteractable {
 
 	void Attack(){
 		StageManager sm = StageManager.Instance;
-		int damage = (int)((att - sm.GetDefence ()) * Random.Range (0.8f, 1.2f));
-		damage = Mathf.Max (damage, 0);
+		int damage = CalcDamage (att, sm.GetDefence ());
 		sm.HP -= damage;
 	}
 
 	void Attacked(){
 		int attackPower = StageManager.Instance.GetAttackPower ();
-		int damage = (int)((attackPower - def) * Random.Range (0.8f, 1.2f));
-		damage = Mathf.Max (damage, 0);
+		int damage = CalcDamage (attackPower, def);
 		if (Random.value > 0.7f) {//for Metal
 			damage++;
 		}
 		Damage (damage);
+
+		Debug.Log (attackPower);
 	}
 
 	void MagicAttacked(){
 		int attackPower = StageManager.Instance.GetMagicAttackPower ();
-		int damage = (int)((attackPower - def) * Random.Range (0.8f, 1.2f));
-		damage = Mathf.Max (damage, 0);
+		int damage = CalcDamage (attackPower, def);
 		Damage (damage);
 	}
 
@@ -79,9 +78,10 @@ public class MonsterInteractable : SelectableInteractable {
 		Destroy (gameObject);
 	}
 
-	/*public override void DisplayText(){
-		TextUpdate ();
-	}*/
+	int CalcDamage(int attack,int defence){
+		int damage = (int)((attack * 4 - defence * 2) * Random.Range (0.8f, 1.2f));
+		return Mathf.Max (0, damage);
+	}
 
 	public override void TextReset ()
 	{

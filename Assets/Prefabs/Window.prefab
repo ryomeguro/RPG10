@@ -106,7 +106,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 21935479301692790, guid: b195dafe4810c4692a76b6965eeb9652, type: 2}
+  - {fileID: 21231422347480990, guid: 47e414bb6e28242869c51540a25b5d88, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 1330537494, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_fontAsset: {fileID: 11400000, guid: b195dafe4810c4692a76b6965eeb9652, type: 2}
+  m_fontAsset: {fileID: 0}
   m_spriteAsset: {fileID: 11400000, guid: c4fd2a959a50b584b92dedfefec1ffda, type: 2}
   m_material: {fileID: 0}
   m_sharedMaterial: {fileID: 2168720, guid: c4fd2a959a50b584b92dedfefec1ffda, type: 2}
@@ -217,8 +217,8 @@ MonoBehaviour:
   m_text: "\u3080\u3089\u3073\u3068\n<line-height=4%> \n\n</line-height>\n<indent=5%>\u3042\u308A\u304C\u3068\u3046\u3002\u304A\u308C\u3044\u306B$500\u3042\u3052\u307E\u3059</indent>\n<line-height=4%>
     \n\n</line-height>\n1.\u3046\u3051\u3068\u308B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b195dafe4810c4692a76b6965eeb9652, type: 2}
-  m_sharedMaterial: {fileID: 21935479301692790, guid: b195dafe4810c4692a76b6965eeb9652,
+  m_fontAsset: {fileID: 11400000, guid: 47e414bb6e28242869c51540a25b5d88, type: 2}
+  m_sharedMaterial: {fileID: 21231422347480990, guid: 47e414bb6e28242869c51540a25b5d88,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

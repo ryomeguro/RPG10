@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: fd0f9370c19b944f2b294f3361b2c6c8
+timeCreated: 1517796439
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Rounded-X Mgen+ 1pp
+  fontNames:
+  - Rounded-X Mgen+ 1pp
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 40c4dc1596cc24f53b50ed9904483a28, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

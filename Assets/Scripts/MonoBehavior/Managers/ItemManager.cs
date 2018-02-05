@@ -6,6 +6,11 @@ public class ItemManager : MonoBehaviour {
 
 	public enum Item{herb,herb2,powerDrag};
 
+	public enum Weapon
+	{
+		sword,armor
+	}
+
 	public static string ItemName(Item item){
 		switch (item) {
 		case ItemManager.Item.herb:

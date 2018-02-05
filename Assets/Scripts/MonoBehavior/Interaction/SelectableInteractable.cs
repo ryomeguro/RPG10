@@ -10,6 +10,7 @@ public class SelectableInteractable : InteractableScript{
 		if(index >= 0 && index < ReactionCollections.Length){
 			ReactionCollections [index].React ();
 		}
+		TextReset ();
 	}
 
 	public override void TextReset(){
