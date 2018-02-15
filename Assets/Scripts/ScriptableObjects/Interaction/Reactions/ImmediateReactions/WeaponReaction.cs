@@ -20,6 +20,7 @@ public class WeaponReaction : Reaction {
 			} else if (weapon == ItemManager.Weapon.sword) {
 				StageManager.Instance.WeaponAtt = power;
 			}
+			StageManager.Instance.AddRecord (new WeaponRecord (weapon, power));
 		}
 	}
 }

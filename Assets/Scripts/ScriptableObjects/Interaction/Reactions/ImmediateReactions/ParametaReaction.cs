@@ -8,9 +8,22 @@ public class ParametaReaction : Reaction {
 
 	public Type type;
 	public int amount;
+	public bool addRecord = true;
+
+	/*public ParametaReaction(Type type, int amount, bool addRecord){
+		this.type = type;
+		this.amount = amount;
+		this.addRecord = addRecord;
+	}*/
+
+	public void Init(Type type, int amount, bool addRecord){
+		this.type = type;
+		this.amount = amount;
+		this.addRecord = addRecord;
+	}
 
 	protected override void ImmediateReaction(){
-		if (amount > 0) {
+		if (amount > 0 && addRecord) {
 			ParametaRecord pr = new ParametaRecord (type, amount);
 			StageManager.Instance.AddRecord (pr);
 		}

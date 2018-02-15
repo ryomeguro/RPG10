@@ -14,6 +14,7 @@ public class BuyReaction : Reaction {
 		if (sm.Money >= price) {
 			sm.Money -= price;
 			sm.ItemAdd (item);
+			sm.AddRecord (new ItemRecord (item));
 		}
 	}
 }

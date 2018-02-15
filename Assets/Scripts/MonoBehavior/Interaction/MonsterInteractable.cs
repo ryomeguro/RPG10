@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class MonsterInteractable : SelectableInteractable {
 
-	public int hp;
+	public int maxHP;
 	public int att;
 	public int def;
+	public int ex;
+	public int money;
 	public float attackDuration;
 	public float radius;
+	public int ID;
+
+	int hp;
 
 	Transform player;
-	float time = 0;
+	float attackTime = 0;
 
 	public override void Interact(int index){
 		if (index == 0) {
@@ -23,17 +28,19 @@ public class MonsterInteractable : SelectableInteractable {
 
 	void Start(){
 		base.Start ();
+		Reset ();
 		player = GameObject.Find ("Player").transform;
+		ReactionCollections [0].MonsterInit (money, ex);
 	}
 
 	void Update(){
 		if (Vector3.SqrMagnitude (player.position - transform.transform.position) < radius * radius) {
-			time += Time.deltaTime;
+			attackTime += Time.deltaTime;
 		}
 
-		if (time > attackDuration) {
+		if (attackTime > attackDuration) {
 			Attack ();
-			time = 0;
+			attackTime = 0;
 		}
 	}
 
@@ -41,17 +48,22 @@ public class MonsterInteractable : SelectableInteractable {
 		StageManager sm = StageManager.Instance;
 		int damage = CalcDamage (att, sm.GetDefence ());
 		sm.HP -= damage;
+		Debug.Log (damage);
 	}
 
 	void Attacked(){
+		if (hp <= 0) {
+			return;
+		}
+
 		int attackPower = StageManager.Instance.GetAttackPower ();
 		int damage = CalcDamage (attackPower, def);
 		if (Random.value > 0.7f) {//for Metal
 			damage++;
 		}
 		Damage (damage);
-
-		Debug.Log (attackPower);
+		StageManager.Instance.AddRecord (new AttackRecord (ID, damage));
+		//Debug.Log (attackPower);
 	}
 
 	void MagicAttacked(){
@@ -60,9 +72,10 @@ public class MonsterInteractable : SelectableInteractable {
 		Damage (damage);
 	}
 
-	void Damage(int damage){
+	public void Damage(int damage){
 		hp -= damage;
 		if (hp <= 0) {
+			hp = 0;
 			Death ();
 			return;
 		}
@@ -71,22 +84,31 @@ public class MonsterInteractable : SelectableInteractable {
 	}
 
 	void Death(){
-		Debug.Log ("Death");
 		for (int i = 0; i < ReactionCollections.Length; i++) {
 			ReactionCollections [i].React ();
 		}
-		Destroy (gameObject);
+		//Destroy (gameObject);
+		//player.GetComponent<PlayerMove> ().NullInteractable (this);
+		gameObject.SetActive (false);
+
+		CloseText ();
+	}
+
+	void Reset(){
+		hp = maxHP;
+		attackTime = 0;
 	}
 
 	int CalcDamage(int attack,int defence){
-		int damage = (int)((attack * 4 - defence * 2) * Random.Range (0.8f, 1.2f));
+		int damage = (int)((attack / 2 - defence / 4) * Random.Range (0.8f, 1.2f));
 		return Mathf.Max (0, damage);
 	}
 
 	public override void TextReset ()
 	{
 		string str = interactName + "\n";
-		str += "<indent=10%>HP:" + hp + "</indent>";
+		str += "<indent=10%>HP:" + hp + "</indent>\n";
+		str += TextUtility.NumberSprite(1) + "攻撃" + TextUtility.NumberSprite(2) + "攻撃魔法";
 		textMesh.text = str;
 	}
 

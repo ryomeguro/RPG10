@@ -12,7 +12,7 @@ public class TextReaction : Reaction
 
 	private Text text;
 
-	public string getText(){
+	public string GetText(){
 		return message;
 	}
 

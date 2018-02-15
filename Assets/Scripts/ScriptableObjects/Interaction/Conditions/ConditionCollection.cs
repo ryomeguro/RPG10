@@ -30,13 +30,15 @@ public class ConditionCollection : ScriptableObject
 		}
 
 		if (reactionCollection) {
-			TextReaction tr = reactionCollection.reactions [0] as TextReaction;
+			/*TextReaction tr = reactionCollection.reactions [0] as TextReaction;
 			if (tr != null) {
-				str = tr.getText ();
+				str = tr.GetText ();
 				return true;
 			} else {
 				return false;
-			}
+			}*/
+			str = reactionCollection.GetText ();
+			return true;
 		}
 		return false;
 	}

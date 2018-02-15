@@ -24,7 +24,7 @@ public abstract class InteractableScript : MonoBehaviour {
 
 	public virtual void DisplayText (){
 		TextReset ();
-		iTween.ScaleTo (window, Vector3.one, 0.5f);
+		iTween.ScaleTo (window, Vector3.one * 2, 0.5f);
 	}
 
 	public virtual void CloseText(){

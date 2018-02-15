@@ -5,17 +5,22 @@ using UnityEngine;
 public class PlayerGhost : MonoBehaviour {
 
 	public MoveRecordFolder folder;
+	public Animator animator;
+	public float maxSpeed;
 
 	bool isStart = false;
 	Vector3 lastPosition;
 
 	Vector3 []records;
 
+	int speedHash;
+
 	// Use this for initialization
 	void Start () {
 		//speed = GameManager.Instance.walkSpeed;
 		records = folder.GetArray ();
 		lastPosition = transform.position;
+		speedHash = Animator.StringToHash ("Speed");
 		MoveStart ();
 	}
 	
@@ -25,6 +30,9 @@ public class PlayerGhost : MonoBehaviour {
 		if (moveDirection != Vector3.zero) {
 			transform.eulerAngles = new Vector3 (0, Mathf.Atan2 (moveDirection.x, moveDirection.z) * Mathf.Rad2Deg, 0);
 		}
+
+		float speed = Vector3.Distance (lastPosition, transform.position) / Time.deltaTime;
+		animator.SetFloat (speedHash, speed / maxSpeed);
 		lastPosition = transform.position;
 	}
 

@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StageSelect.unity
     guid: 447e779f781104eda98fcad1c3deaa35
-  - enabled: 1
-    path: Assets/Scenes/StageMain01.unity
+  - enabled: 0
+    path: Assets/Scenes/TestScene/StageTest.unity
     guid: 057b1e64ae5224096a784b8a7c9ed286
+  - enabled: 1
+    path: Assets/Scenes/TestScene/StageMain01.unity
+    guid: 9159fa67ad2fe486f846941d80ab2907

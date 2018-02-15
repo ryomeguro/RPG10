@@ -11,7 +11,7 @@ public class ParametaRecord : Record {
 		this.type = type;
 		this.amount = amount;
 	}
-
+		
 	public void RecordAction(Transform pPosition){
 		switch (type) {
 		case  ParametaReaction.Type.Ex:

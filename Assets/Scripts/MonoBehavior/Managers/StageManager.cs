@@ -21,6 +21,7 @@ public class StageManager : MonoBehaviour {
 
 	int maxHP,maxMP;
 	int maxEx;
+	int powerDragEffect = 0;
 	TextMeshProUGUI informationText;
 	StageInfo stageInfo;
 	Record nowRecord;
@@ -39,6 +40,10 @@ public class StageManager : MonoBehaviour {
 		}
 		set{ 
 			hp = Mathf.Min(maxHP, value);
+			if (hp <= 0) {
+				hp = 0;
+				Death ();
+			}
 			UIUpdate ();
 		}
 	}
@@ -71,8 +76,8 @@ public class StageManager : MonoBehaviour {
 			return experience;
 		}
 		set{ 
-			while (value > 100) {
-				value -= 10;
+			while (value >= maxEx) {
+				value -= maxEx;
 				LevelUp ();
 			}
 			experience = value;
@@ -90,8 +95,6 @@ public class StageManager : MonoBehaviour {
 		itemList.Add (ItemManager.Item.herb, 0);
 		itemList.Add (ItemManager.Item.herb2, 0);
 		itemList.Add (ItemManager.Item.powerDrag, 0);
-
-		//StageInit ();
 	}
 	
 	// Update is called once per frame
@@ -104,11 +107,8 @@ public class StageManager : MonoBehaviour {
 		if (time <= 0) {
 			time = 0;
 			UIUpdate ();
-			if (turnNumber >= stageInfo.turnNumber) {
-				StageFailed ();
-			} else {
-				TurnEnd ();
-			}
+
+			TurnEnd ();
 			return;
 		}
 		UIUpdate ();
@@ -124,7 +124,6 @@ public class StageManager : MonoBehaviour {
 		//informationText = GameObject.Find ("InformationText").GetComponent<TextMeshProUGUI> ();
 		turnNumber = 1;
 
-		AllConditions.Instance.Reset ();
 		folder.Reset ();
 
 		TurnInit ();
@@ -136,11 +135,17 @@ public class StageManager : MonoBehaviour {
 		stageInfo = GameObject.Find ("StageInfo").GetComponent<StageInfo> ();
 		informationText = GameObject.Find ("InformationText").GetComponent<TextMeshProUGUI> ();
 
+		AllConditions.Instance.Reset ();
+		ItemReset ();
 		Lv = stageInfo.startLv;
 		ParamCalc (Lv);
 		time = stageInfo.turnDuration;
 		AllRecover ();
 		Money = stageInfo.startMoney;
+		WeaponAtt = 0;
+		WeaponDef = 0;
+		Ex = 0;
+		powerDragEffect = 0;
 
 		playerMove = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerMove> ();
 		playerMove.folder = moveFolders [turnNumber - 1];
@@ -158,7 +163,13 @@ public class StageManager : MonoBehaviour {
 	}
 
 	public void TurnEnd(){
+		if (turnNumber >= stageInfo.turnNumber) {
+			StageFailed ();
+			return;
+		}
+
 		isStart = false;
+		playerMove.isStart = false;
 
 		foreach (Record rec in tmpRecordFolder) {
 			folder.AddRecord (rec);
@@ -172,10 +183,12 @@ public class StageManager : MonoBehaviour {
 
 	public void StageClear(){
 		Debug.Log ("CLEAR!!!!");
+		isStart = false;
 	}
 
 	void StageFailed(){
 		Debug.Log ("Failed...");
+		isStart = false;
 	}
 
 	public void UIUpdate(){
@@ -188,9 +201,9 @@ public class StageManager : MonoBehaviour {
 		             "<size=50%>次のレベルまで</size>\n" +
 		             "Ex:" + (maxEx - experience) + "\n" +
 		             "<size=70%>";
-
+		int i = 4;
 		foreach (ItemManager.Item key in itemList.Keys) {
-			str += "O" + ItemManager.ItemName(key) + "x" + itemList[key] + "\n";
+			str += TextUtility.NumberSprite(i++) + ItemManager.ItemName(key) + "x" + itemList[key] + "\n";
 		}
 		str += "</size>";
 		informationText.text = str;
@@ -205,11 +218,37 @@ public class StageManager : MonoBehaviour {
 		if (itemList [item] > 0) {
 			itemList [item]--;
 			flg = true;
+
+			switch (item) {
+			case ItemManager.Item.herb:
+				HP += 30;
+				break;
+			case ItemManager.Item.herb2:
+				HP += 100;
+				break;
+			case ItemManager.Item.powerDrag:
+				StartCoroutine (PowerDrug ());
+				break;
+			}
 		} else {
 			flg = false;
 		}
 		UIUpdate ();
 		return flg;
+	}
+	void ItemReset(){
+		foreach(ItemManager.Item key in itemList.Keys){
+			itemList [key] = 0;
+		}
+	}
+
+	public IEnumerator PowerDrug(){
+		AddRecord (new PowerDragRecord ());
+		powerDragEffect++;
+		yield return new WaitForSeconds (2f);
+		if (powerDragEffect > 0) {
+			powerDragEffect--;
+		}
 	}
 
 	public void AddRecord(Record record){
@@ -218,7 +257,7 @@ public class StageManager : MonoBehaviour {
 	}
 
 	public int GetAttackPower(){
-		return Att + WeaponAtt;
+		return (int)((Att + WeaponAtt) * Mathf.Pow (1.25f, powerDragEffect));
 	}
 	public int GetMagicAttackPower(){
 		return Att * 2;
@@ -233,6 +272,12 @@ public class StageManager : MonoBehaviour {
 		MP = maxMP;
 	}
 
+	void Death(){
+		if (isStart) {
+			TurnEnd ();
+		}
+	}
+
 	void LevelUp(){
 		Lv++;
 		ParamCalc (Lv);
@@ -240,20 +285,26 @@ public class StageManager : MonoBehaviour {
 	}
 
 	void ParamCalc(int level){
+		int initMaxHP = 20;
+		int initMaxMP = 10;
+		int initAtt = 10;
+		int initDef = 5;
+		int initmaxEx = 10;
+
 		if (level == 1) {
-			maxHP = 20;
-			maxMP = 10;
-			Att = 5;
-			Def = 5;
-			maxEx = 10;
+			maxHP = initMaxHP;
+			maxMP = initMaxMP;
+			Att = initAtt;
+			Def = initDef;
+			maxEx = initmaxEx;
 			return;
 		}
 
-		maxHP = 20 + level * 5;
-		maxMP = 10 + level * 3;
-		Att = 5 + level * 4;
-		Def = 5 + level * 3;
-		maxEx = 10 + level * 20;
+		maxHP = initMaxHP + level * 5;
+		maxMP = initMaxMP + level * 3;
+		Att = initAtt + level * 4;
+		Def = initDef + level * 3;
+		maxEx = initmaxEx + level * 20;
 	}
 
 	string TimeToString(float time){

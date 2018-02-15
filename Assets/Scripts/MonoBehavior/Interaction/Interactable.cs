@@ -11,11 +11,14 @@ public class Interactable : InteractableScript
     {
         for (int i = 0; i < conditionCollections.Length; i++)
         {
-            if (conditionCollections[i].CheckAndReact ())
-                return;
+			if (conditionCollections [i].CheckAndReact ()) {
+				TextReset ();
+				return;
+			}
         }
 
         defaultReactionCollection.React ();
+		TextReset ();
     }
 
 
@@ -30,7 +33,8 @@ public class Interactable : InteractableScript
 			}
 		}
 
-		TextReaction tr = defaultReactionCollection.reactions [0] as TextReaction;
-		textMesh.text = tr.getText();
+		/*TextReaction tr = defaultReactionCollection.reactions [0] as TextReaction;
+		textMesh.text = tr.GetText();*/
+		textMesh.text = defaultReactionCollection.GetText ();
 	}
 }

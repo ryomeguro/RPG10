@@ -6,6 +6,7 @@ public class PlayerMove : MonoBehaviour {
 
 
 	public MoveRecordFolder folder;
+	public Animator animator;
 	public float maxSpeed;
 
 	CharacterController cc;
@@ -13,7 +14,9 @@ public class PlayerMove : MonoBehaviour {
 
 	Vector3 lastPosition;
 	float recordDuration;
-	bool isStart = false;
+	public bool isStart = false;
+
+	int speedHash;
 
 	float time = 0;
 
@@ -22,11 +25,14 @@ public class PlayerMove : MonoBehaviour {
 		cc = GetComponent<CharacterController> ();
 		recordDuration = StageManager.Instance.recordDuration;
 
+		speedHash = Animator.StringToHash ("Speed");
+
 		lastPosition = transform.position;
 	}
 
 	void Update(){
 		if (!isStart) {
+			animator.SetFloat (speedHash, 0);
 			return;
 		}
 
@@ -45,7 +51,8 @@ public class PlayerMove : MonoBehaviour {
 			time = 0;
 		}
 
-		//Debug.Log (Vector3.Distance (lastPosition, transform.position)/Time.deltaTime);
+		float speed = Vector3.Distance (lastPosition, transform.position) / Time.deltaTime;
+		animator.SetFloat (speedHash, speed / maxSpeed);
 		lastPosition = transform.position;
 
 		//INTERACT
@@ -66,12 +73,28 @@ public class PlayerMove : MonoBehaviour {
 				}
 			}
 		}
+
+		//ITEM
+		if (Input.GetKeyDown (KeyCode.Alpha4)) {
+			StageManager.Instance.ItemUse (ItemManager.Item.herb);
+		} else if (Input.GetKeyDown (KeyCode.Alpha5)) {
+			StageManager.Instance.ItemUse (ItemManager.Item.herb);
+		} else if (Input.GetKeyDown (KeyCode.Alpha6)) {
+			StageManager.Instance.ItemUse (ItemManager.Item.powerDrag);
+		}
 	}
 
 	public void MoveStart(){
 		folder.Reset ();
 		isStart = true;
 	}
+
+	/*public void NullInteractable(InteractableScript interactable){
+		if (this.interactable.Equals(interactable)) {
+			interactable = null;
+			Debug.Log (interactable);
+		}
+	}*/
 
 	void RecordPosition(Vector3 pos){
 		folder.AddRecord (transform.position);

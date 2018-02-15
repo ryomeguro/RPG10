@@ -8,10 +8,7 @@ public class ShopInteractable : SelectableInteractable {
 		if (type == InteractableScript.Type.shop) {
 			string str = interactName + "\n<indent=5%>";
 			for (int i = 0; i < ReactionCollections.Length; i++) {
-				//BuyReaction reaction = ReactionCollections [i].reactions [0] as BuyReaction;
-				//if (reaction != null) {
-					str += ItemString (ReactionCollections [i].reactions [0]);//ItemManager.ItemName(reaction.item) + ":$" + reaction.price + "\n";
-				//}
+				str += TextUtility.NumberSprite (i + 1) + ItemString (ReactionCollections [i].reactions [0]);
 			}
 			str += "</indent>";
 			textMesh.text = str;
@@ -41,7 +38,7 @@ public class ShopInteractable : SelectableInteractable {
 	}
 
 	bool CanBuy(BuyReaction bReaction){
-		return StageManager.Instance.Money > bReaction.price;
+		return StageManager.Instance.Money >= bReaction.price;
 	}
 
 	bool CanBuy(WeaponReaction wReaction){
