@@ -1182,7 +1182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   folder: {fileID: 11400000, guid: 58ef913397fb54e75b410766a58ed493, type: 2}
   animator: {fileID: 95431666995999092}
-  maxSpeed: 5
+  maxSpeed: 10
   isStart: 0
 --- !u!137 &137160051251715118
 SkinnedMeshRenderer:

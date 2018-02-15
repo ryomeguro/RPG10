@@ -16,6 +16,7 @@ public class MonsterInteractable : SelectableInteractable {
 	int hp;
 
 	Transform player;
+	PlayerMove playerMove;
 	float attackTime = 0;
 
 	public override void Interact(int index){
@@ -29,7 +30,9 @@ public class MonsterInteractable : SelectableInteractable {
 	void Start(){
 		base.Start ();
 		Reset ();
-		player = GameObject.Find ("Player").transform;
+		GameObject p = GameObject.Find ("Player");
+		player = p.transform;
+		playerMove = p.GetComponent<PlayerMove> ();
 		ReactionCollections [0].MonsterInit (money, ex);
 	}
 
@@ -48,13 +51,14 @@ public class MonsterInteractable : SelectableInteractable {
 		StageManager sm = StageManager.Instance;
 		int damage = CalcDamage (att, sm.GetDefence ());
 		sm.HP -= damage;
-		Debug.Log (damage);
+		//Debug.Log (damage);
 	}
 
 	void Attacked(){
 		if (hp <= 0) {
 			return;
 		}
+		playerMove.Attack ();
 
 		int attackPower = StageManager.Instance.GetAttackPower ();
 		int damage = CalcDamage (attackPower, def);

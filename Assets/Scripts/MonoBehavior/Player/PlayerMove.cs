@@ -17,6 +17,7 @@ public class PlayerMove : MonoBehaviour {
 	public bool isStart = false;
 
 	int speedHash;
+	int attackHash;
 
 	float time = 0;
 
@@ -26,6 +27,7 @@ public class PlayerMove : MonoBehaviour {
 		recordDuration = StageManager.Instance.recordDuration;
 
 		speedHash = Animator.StringToHash ("Speed");
+		attackHash = Animator.StringToHash ("Attack");
 
 		lastPosition = transform.position;
 	}
@@ -87,6 +89,10 @@ public class PlayerMove : MonoBehaviour {
 	public void MoveStart(){
 		folder.Reset ();
 		isStart = true;
+	}
+
+	public void Attack(){
+		animator.SetTrigger (attackHash);
 	}
 
 	/*public void NullInteractable(InteractableScript interactable){

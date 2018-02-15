@@ -254,6 +254,7 @@ public class StageManager : MonoBehaviour {
 	public void AddRecord(Record record){
 		record.time = time;
 		tmpRecordFolder.Add (record);
+		Debug.Log ("addrecord:" + record);
 	}
 
 	public int GetAttackPower(){

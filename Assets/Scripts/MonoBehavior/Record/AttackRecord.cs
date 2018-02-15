@@ -13,6 +13,7 @@ public class AttackRecord : Record {
 	}
 
 	public override void RecordAction(){
+		Debug.Log ("AttackRecord");
 		MonsterInteractable mi = MonsterManager.Instance.GetMonsterInteractable (ID);
 		if (mi != null) {
 			mi.Damage (damage);
