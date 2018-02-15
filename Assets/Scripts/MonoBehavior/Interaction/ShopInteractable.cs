@@ -48,6 +48,6 @@ public class ShopInteractable : SelectableInteractable {
 		}else if (wReaction.weapon == ItemManager.Weapon.sword){
 			currentPower = StageManager.Instance.WeaponAtt;
 		}
-		return (StageManager.Instance.Money > wReaction.price) && (currentPower < wReaction.power);
+		return (StageManager.Instance.Money >= wReaction.price) && (currentPower < wReaction.power);
 	}
 }

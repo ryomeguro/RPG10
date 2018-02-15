@@ -116,6 +116,7 @@ public class StageManager : MonoBehaviour {
 		if (nowRecord.time > time) {
 			nowRecord.RecordAction ();
 			nowRecord = folder.GetRecord ();
+			playerMove.TextReset ();
 		}
 	}
 
@@ -254,7 +255,7 @@ public class StageManager : MonoBehaviour {
 	public void AddRecord(Record record){
 		record.time = time;
 		tmpRecordFolder.Add (record);
-		Debug.Log ("addrecord:" + record);
+		//Debug.Log ("addrecord:" + record);
 	}
 
 	public int GetAttackPower(){

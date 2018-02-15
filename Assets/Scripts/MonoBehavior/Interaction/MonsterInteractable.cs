@@ -65,9 +65,9 @@ public class MonsterInteractable : SelectableInteractable {
 		if (Random.value > 0.7f) {//for Metal
 			damage++;
 		}
+		Debug.Log ("attack" + damage + ":" + "HP=" + (hp - damage));
 		Damage (damage);
 		StageManager.Instance.AddRecord (new AttackRecord (ID, damage));
-		//Debug.Log (attackPower);
 	}
 
 	void MagicAttacked(){
@@ -92,7 +92,9 @@ public class MonsterInteractable : SelectableInteractable {
 			ReactionCollections [i].React ();
 		}
 		//Destroy (gameObject);
-		//player.GetComponent<PlayerMove> ().NullInteractable (this);
+		playerMove.NullInteractable (this);
+		playerMove.TextReset ();
+
 		gameObject.SetActive (false);
 
 		CloseText ();

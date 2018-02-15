@@ -95,12 +95,19 @@ public class PlayerMove : MonoBehaviour {
 		animator.SetTrigger (attackHash);
 	}
 
-	/*public void NullInteractable(InteractableScript interactable){
-		if (this.interactable.Equals(interactable)) {
-			interactable = null;
-			Debug.Log (interactable);
+	public void TextReset(){
+		ShopInteractable shop = interactable as ShopInteractable;
+		if (shop != null) {
+			shop.TextReset ();
 		}
-	}*/
+	}
+
+	public void NullInteractable(InteractableScript interactable){
+		if (this.interactable != null && this.interactable.GetInstanceID() == interactable.GetInstanceID()) {
+			interactable = null;
+			Debug.Log ("Null:" + interactable);
+		}
+	}
 
 	void RecordPosition(Vector3 pos){
 		folder.AddRecord (transform.position);
@@ -115,6 +122,7 @@ public class PlayerMove : MonoBehaviour {
 	}
 
 	void OnTriggerExit(Collider c){
+		Debug.Log ("EXIT!!" + c.name + ":INTR=" + interactable);
 		if (interactable != null) {
 			interactable.CloseText ();
 			interactable = null;
