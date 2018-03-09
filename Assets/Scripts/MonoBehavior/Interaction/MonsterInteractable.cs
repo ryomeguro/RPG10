@@ -13,11 +13,17 @@ public class MonsterInteractable : SelectableInteractable {
 	public float radius;
 	public int ID;
 
+	public SkinnedMeshRenderer mesh;
+
 	int hp;
+	bool death = false;
 
 	Transform player;
 	PlayerMove playerMove;
 	float attackTime = 0;
+
+	ParticleSystem particle;
+	AudioSource voice;
 
 	public override void Interact(int index){
 		if (index == 0) {
@@ -33,10 +39,15 @@ public class MonsterInteractable : SelectableInteractable {
 		GameObject p = GameObject.Find ("Player");
 		player = p.transform;
 		playerMove = p.GetComponent<PlayerMove> ();
+		particle = GetComponent<ParticleSystem> ();
+		voice = GetComponent<AudioSource> ();
 		ReactionCollections [0].MonsterInit (money, ex);
 	}
 
 	void Update(){
+		if (death) {
+			return;
+		}
 		if (Vector3.SqrMagnitude (player.position - transform.transform.position) < radius * radius) {
 			attackTime += Time.deltaTime;
 		}
@@ -55,30 +66,51 @@ public class MonsterInteractable : SelectableInteractable {
 	}
 
 	void Attacked(){
-		if (hp <= 0) {
+		if (death) {
 			return;
 		}
-		playerMove.Attack ();
+		playerMove.AttackAnimation ();
 
 		int attackPower = StageManager.Instance.GetAttackPower ();
 		int damage = CalcDamage (attackPower, def);
 		if (Random.value > 0.7f) {//for Metal
 			damage++;
 		}
-		Debug.Log ("attack" + damage + ":" + "HP=" + (hp - damage));
+			
+		//Debug.Log ("attack" + damage + ":" + "HP=" + (hp - damage));
 		Damage (damage);
 		StageManager.Instance.AddRecord (new AttackRecord (ID, damage));
 	}
 
 	void MagicAttacked(){
+		if (death) {
+			return;
+		}
+		if (!StageManager.Instance.MagicAttack ()) {
+			return;
+		}
+		playerMove.MagicAttackAnimation ();
+
 		int attackPower = StageManager.Instance.GetMagicAttackPower ();
 		int damage = CalcDamage (attackPower, def);
 		Damage (damage);
+		StageManager.Instance.AddRecord (new AttackRecord (ID, damage));
 	}
 
 	public void Damage(int damage){
+		if (death) {
+			return;
+		}
+
+		if (damage > 0) {
+			voice.PlayOneShot (SoundUtility.Instance.slash);
+		} else {
+			voice.PlayOneShot (SoundUtility.Instance.glass);
+		}
+
 		hp -= damage;
 		if (hp <= 0) {
+			death = true;
 			hp = 0;
 			Death ();
 			return;
@@ -91,13 +123,28 @@ public class MonsterInteractable : SelectableInteractable {
 		for (int i = 0; i < ReactionCollections.Length; i++) {
 			ReactionCollections [i].React ();
 		}
-		//Destroy (gameObject);
+
+		voice.PlayOneShot (SoundUtility.Instance.monsterDeath);
 		playerMove.NullInteractable (this);
 		playerMove.TextReset ();
 
-		gameObject.SetActive (false);
-
+		//gameObject.SetActive (false);
 		CloseText ();
+
+		Collider[] cs = GetComponents<Collider> ();
+		foreach (Collider c in cs) {
+			c.enabled = false;
+		}
+
+		StartCoroutine (DeathAnimation ());
+
+	}
+	IEnumerator DeathAnimation(){
+		particle.Play ();
+		//yield return new WaitForSeconds (0.5f);
+		mesh.enabled = false;
+		yield return new WaitForSeconds (6f);
+		gameObject.SetActive (false);
 	}
 
 	void Reset(){
@@ -116,6 +163,13 @@ public class MonsterInteractable : SelectableInteractable {
 		str += "<indent=10%>HP:" + hp + "</indent>\n";
 		str += TextUtility.NumberSprite(1) + "攻撃" + TextUtility.NumberSprite(2) + "攻撃魔法";
 		textMesh.text = str;
+	}
+
+	public override void DisplayText ()
+	{
+		if (hp > 0) {
+			base.DisplayText ();
+		}
 	}
 
 

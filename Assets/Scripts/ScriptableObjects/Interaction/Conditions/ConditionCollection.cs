@@ -42,4 +42,30 @@ public class ConditionCollection : ScriptableObject
 		}
 		return false;
 	}
+
+	public bool CheckAndString(out string str, out AudioClip sound, out float volume){
+		str = "";
+		sound = null;
+		volume = 1;
+
+		for (int i = 0; i < requiredConditions.Length; i++) {
+			if (!AllConditions.CheckCondition (requiredConditions [i])) {
+				return false;
+			}
+		}
+
+		if (reactionCollection) {
+			/*			TextReaction tr = reactionCollection.reactions [0] as TextReaction;
+			if (tr != null) {
+				str = tr.GetText ();
+				return true;
+			} else {
+				return false;
+			}*/
+			str = reactionCollection.GetText ();
+			sound = reactionCollection.GetSound (out volume);
+			return true;
+		}
+		return false;
+	}
 }

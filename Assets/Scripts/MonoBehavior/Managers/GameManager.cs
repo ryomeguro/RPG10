@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour {
 	//public int walkSpeed;
 	//public int hp, mp, money;
 
-	//public int lv;
+	public int stage = 1;
 
 	//public RecordFolder[] RecordFolders;
 
@@ -28,7 +28,8 @@ public class GameManager : MonoBehaviour {
 
 	void Update(){
 		if (Input.GetKeyDown (KeyCode.A)) {
-			SceneController.Instance.GoToStage (1);
+			stageManager.stageNumber = stage;
+			SceneController.Instance.GoToStage (stage);
 		}
 	}
 }

@@ -75,4 +75,14 @@ public class ReactionCollection : MonoBehaviour
 			return "";
 		}
 	}
+
+	public AudioClip GetSound(out float volume){
+		volume = 1;
+		if (textReaction != null) {
+			volume = textReaction.volume;
+			return textReaction.GetSound ();
+		} else {
+			return null;
+		}
+	}
 }

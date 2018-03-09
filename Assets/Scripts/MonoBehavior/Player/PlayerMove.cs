@@ -8,9 +8,13 @@ public class PlayerMove : MonoBehaviour {
 	public MoveRecordFolder folder;
 	public Animator animator;
 	public float maxSpeed;
+	public ParticleSystem PowerDragParticle;
+	public ParticleSystem HerbParticle;
 
 	CharacterController cc;
 	InteractableScript interactable = null;
+	ParticleSystem particle;
+	Light magicLight;
 
 	Vector3 lastPosition;
 	float recordDuration;
@@ -24,6 +28,8 @@ public class PlayerMove : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		cc = GetComponent<CharacterController> ();
+		particle = GetComponent<ParticleSystem> ();
+		magicLight = transform.Find ("MagicLight").GetComponent<Light> ();
 		recordDuration = StageManager.Instance.recordDuration;
 
 		speedHash = Animator.StringToHash ("Speed");
@@ -91,8 +97,20 @@ public class PlayerMove : MonoBehaviour {
 		isStart = true;
 	}
 
-	public void Attack(){
+	public void AttackAnimation(){
 		animator.SetTrigger (attackHash);
+	}
+
+	public void MagicAttackAnimation(){
+		particle.Play (false);
+		float lightTime = 0.3f;
+		float peakTime = 0.1f;
+		iTween.ValueTo (gameObject, iTween.Hash ("from", 0f, "to", 1f, "time", lightTime * peakTime, "easeType", iTween.EaseType.easeOutCubic, "onupdate", "MagicLightIntensity", "onpudatetarget", gameObject));
+		iTween.ValueTo (gameObject, iTween.Hash ("from", 1f, "to", 0f, "time", lightTime * (1 - peakTime), "delay", lightTime * peakTime, "easeType", iTween.EaseType.easeInOutCubic, "onupdate", "MagicLightIntensity", "onpudatetarget", gameObject));
+	}
+	void MagicLightIntensity(float value){
+		float intensity = 5f;
+		magicLight.intensity = value * intensity;
 	}
 
 	public void TextReset(){
@@ -118,11 +136,11 @@ public class PlayerMove : MonoBehaviour {
 		if (interactable != null) {
 			interactable.DisplayText ();
 		}
-		Debug.Log (interactable);
+		//Debug.Log (interactable);
 	}
 
 	void OnTriggerExit(Collider c){
-		Debug.Log ("EXIT!!" + c.name + ":INTR=" + interactable);
+		//Debug.Log ("EXIT!!" + c.name + ":INTR=" + interactable);
 		if (interactable != null) {
 			interactable.CloseText ();
 			interactable = null;

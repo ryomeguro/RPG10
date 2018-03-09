@@ -31,6 +31,12 @@ public abstract class InteractableScript : MonoBehaviour {
 		iTween.ScaleTo (window, Vector3.zero, 0.5f);
 	}
 
+	public void PlaySound(AudioClip sound, float volume){
+		if (sound != null) {
+			SoundUtility.Instance.PlayOneShot (sound, volume);
+		}
+	}
+
 	public abstract void TextReset ();
 
 }

@@ -27,8 +27,11 @@ public class Interactable : InteractableScript
 		for (int i = 0; i < conditionCollections.Length; i++)
 		{
 			string str;
-			if (conditionCollections [i].CheckAndString (out str)) {
+			AudioClip sound;
+			float volume;
+			if (conditionCollections [i].CheckAndString (out str,out sound, out volume)) {
 				textMesh.text = str;
+				PlaySound (sound, volume);
 				return;
 			}
 		}
@@ -36,5 +39,9 @@ public class Interactable : InteractableScript
 		/*TextReaction tr = defaultReactionCollection.reactions [0] as TextReaction;
 		textMesh.text = tr.GetText();*/
 		textMesh.text = defaultReactionCollection.GetText ();
+
+		float vol;
+		AudioClip clip = defaultReactionCollection.GetSound (out vol);
+		PlaySound (clip, vol);
 	}
 }

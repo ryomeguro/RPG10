@@ -12,6 +12,9 @@ public class BuyReaction : Reaction {
 		Debug.Log ("BuyReact");
 		StageManager sm = StageManager.Instance;
 		if (sm.Money >= price) {
+			if (price > 0) {
+				SoundUtility.Instance.PlayOneShot (SoundUtility.Instance.register, 0.5f);
+			}
 			sm.Money -= price;
 			sm.ItemAdd (item);
 			sm.AddRecord (new ItemRecord (item));

@@ -40,7 +40,8 @@ public class PlayerGhost : MonoBehaviour {
 		isStart = true;
 
 		if (records.Length > 0) {
-			float time = records.Length * StageManager.Instance.recordDuration;
+			//float time = records.Length * StageManager.Instance.recordDuration;
+			float time = (records.Length + 1) * StageManager.Instance.recordDuration;
 			iTween.MoveTo (gameObject, iTween.Hash ("path", records, "time", time, "easetype", iTween.EaseType.linear));
 		}
 	}

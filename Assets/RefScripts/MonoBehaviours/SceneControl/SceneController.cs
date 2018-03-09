@@ -38,6 +38,9 @@ public class SceneController : MonoBehaviour
 		StartCoroutine (Fade (0f));
     }
 
+	/*
+	 * My Methods START
+	 */
 	public void GoToStage(int stageNumber){
 		if (!isFading)
 		{
@@ -54,6 +57,18 @@ public class SceneController : MonoBehaviour
 			StartCoroutine (FadeAndSwitchScenes (activeSceneName));
 		}
 	}
+
+	public void StageEnd(){
+		if (!isFading)
+		{
+			AfterSceneLoad = null;
+			StartCoroutine (FadeAndSwitchScenes ("StageSelect"));
+		}
+	}
+
+	/*
+	 * My Method END
+	 */
 
     public void FadeAndLoadScene (SceneReaction sceneReaction)
     {
@@ -84,7 +99,7 @@ public class SceneController : MonoBehaviour
         yield return StartCoroutine (LoadSceneAndSetActive (sceneName));
 
         if (AfterSceneLoad != null)
-            AfterSceneLoad ();
+			AfterSceneLoad ();
         
         yield return StartCoroutine (Fade (0f));
     }

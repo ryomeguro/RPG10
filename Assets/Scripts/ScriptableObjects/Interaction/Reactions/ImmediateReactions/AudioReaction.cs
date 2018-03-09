@@ -2,14 +2,18 @@
 
 public class AudioReaction : Reaction
 {
-    public AudioSource audioSource;
+	//public AudioSource audioSource;
     public AudioClip audioClip;
+	public float volume = 1;
     public float delay;
+
 
 
     protected override void ImmediateReaction()
     {
-        audioSource.clip = audioClip;
-        audioSource.PlayDelayed(delay);
+		//audioSource.clip = audioClip;
+		//audioSource.PlayDelayed(delay);
+
+		SoundUtility.Instance.PlayDelayed (audioClip, delay, volume);
     }
 }

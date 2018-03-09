@@ -5,22 +5,27 @@ using UnityEngine;
 public class TextReactionEditor : ReactionEditor
 {
     private SerializedProperty messageProperty;
-    private SerializedProperty textColorProperty;
-    private SerializedProperty delayProperty;
+	//private SerializedProperty textColorProperty;
+	//private SerializedProperty delayProperty;
+	private SerializedProperty soundProperty;
+	private SerializedProperty volumeProperty;
 
 
     private const float messageGUILines = 3f;
     private const float areaWidthOffset = 19f;
     private const string textReactionPropMessageName = "message";
-    private const string textReactionPropTextColorName = "textColor";
-    private const string textReactionPropDelayName = "delay";
-
+	//private const string textReactionPropTextColorName = "textColor";
+	//private const string textReactionPropDelayName = "delay";
+	private const string textReactionPropSoundName = "sound";
+	private const string textReactionPropVolumeName = "volume";
 
     protected override void Init ()
     {
         messageProperty = serializedObject.FindProperty (textReactionPropMessageName);
 		//textColorProperty = serializedObject.FindProperty (textReactionPropTextColorName);
 		//delayProperty = serializedObject.FindProperty (textReactionPropDelayName);
+		soundProperty = serializedObject.FindProperty (textReactionPropSoundName);
+		volumeProperty = serializedObject.FindProperty (textReactionPropVolumeName);
     }
 
 
@@ -33,6 +38,8 @@ public class TextReactionEditor : ReactionEditor
 
 		//EditorGUILayout.PropertyField (textColorProperty);
 		//EditorGUILayout.PropertyField (delayProperty);
+		EditorGUILayout.PropertyField (soundProperty);
+		EditorGUILayout.PropertyField (volumeProperty);
     }
 
 
